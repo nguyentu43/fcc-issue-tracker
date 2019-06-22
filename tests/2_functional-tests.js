@@ -144,6 +144,7 @@ suite('Functional Tests', function() {
       
     });
     
+    let delete_id;
     suite('GET /api/issues/{project} => Array of objects with issue data', function() {
       
       test('No filter', function(done) {
@@ -162,6 +163,7 @@ suite('Functional Tests', function() {
           assert.property(res.body[0], 'open');
           assert.property(res.body[0], 'status_text');
           assert.property(res.body[0], '_id');
+          delete_id = res.body[0]._id;
           done();
         });
       });
@@ -193,7 +195,8 @@ suite('Functional Tests', function() {
         chai.request(server)
         .get('/api/issues/apitest')
         .query({
-          open: false
+          open: false,
+          created_by: 'test'
         })
         .end(function(err, res){
           assert.equal(res.status, 200);
@@ -217,11 +220,29 @@ suite('Functional Tests', function() {
     suite('DELETE /api/issues/{project} => text', function() {
       
       test('No _id', function(done) {
-        
+        chai
+        .request(server)
+        .delete('/api/issues/test')
+        .send()
+        .end(function(err, res){
+          assert.equal(res.status, 200);
+          assert.equal(res.text, '_id error');
+          done();
+        })
       });
       
       test('Valid _id', function(done) {
-        
+        chai
+        .request(server)
+        .delete('/api/issues/test')
+        .send({
+          _id: delete_id
+        })
+        .end(function(err, res){
+          assert.equal(res.status, 200);
+          assert.equal(res.text, 'deleted' + delete_id);
+          done();
+        })
       });
       
     });
