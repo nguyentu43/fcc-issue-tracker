@@ -29,8 +29,13 @@ suite('Functional Tests', function() {
         })
         .end(function(err, res){
           assert.equal(res.status, 200);
-          
-          //fill me in too!
+          assert.deepEqual(res.body, {
+            issue_title: 'Title',
+            issue_text: 'text',
+            created_by: 'Functional Test - Every field filled in',
+            assigned_to: 'Chai and Mocha',
+            status_text: 'In QA'
+          });
           
           done();
         });

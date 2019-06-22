@@ -48,6 +48,10 @@ app.use(function(req, res, next) {
     .send('Not Found');
 });
 
+app.use(function(err, req, res, next){
+  res.send(err.message);
+});
+
 //Start our server and tests!
 app.listen(process.env.PORT || 3000, function () {
   console.log("Listening on port " + process.env.PORT);

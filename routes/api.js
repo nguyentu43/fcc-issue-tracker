@@ -34,6 +34,8 @@ const schema = mongoose.Schema({
     default: false
   },
   update_on: Date
+},{
+  versionKey: false
 });
 
 schema.pre('save', function(){
@@ -51,9 +53,17 @@ module.exports = function (app) {
       
     })
     
-    .post(function (req, res){
+    .post(function (req, res, next){
       var project = req.params.project;
-      const issue = new Issue({})
+      const issue = new Issue({
+        ...req.body
+      });
+    
+      issue.save(function(err, issue){
+        if(err) return next(err);
+        console.log(issue);
+        res.json(issue);
+      });
     })
     
     .put(function (req, res){
