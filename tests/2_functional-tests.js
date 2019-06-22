@@ -47,9 +47,31 @@ suite('Functional Tests', function() {
         chai.request(server)
         .post('/api/issues/test')
         .send({
-          created_by: 'Functional Test - Every field filled in',
-          assigned_to: 'Chai and Mocha',
-          status_text: 'In QA'
+          issue_title: 'Title',
+          issue_text: 'text',
+          created_by: 'Functional Test - Every field filled in'
+        })
+        .end(function(err, res){
+         
+          assert.equal(res.status, 200);
+         
+          assert.deepInclude(res.body, {
+            issue_title: 'Title',
+            issue_text: 'text',
+            created_by: 'Functional Test - Every field filled in',
+          });
+          
+          done();
+        });
+      });
+      
+      test('Missing required fields', function(done) {
+        
+        chai.request(server)
+        .post('/api/issues/test')
+        .send({
+          issue_text: 'text',
+          created_by: 'Functional Test - Every field filled in'
         })
         .end(function(err, res){
          
@@ -59,9 +81,6 @@ suite('Functional Tests', function() {
           
           done();
         });
-      });
-      
-      test('Missing required fields', function(done) {
         
       });
       
@@ -70,11 +89,37 @@ suite('Functional Tests', function() {
     suite('PUT /api/issues/{project} => text', function() {
       
       test('No body', function(done) {
-        
+        chai
+        .request(server)
+        .put('/api/issues/test')
+        .send({
+          _id: '5d0e6910cb6bac77d71d6ad7'
+        })
+        .end(function(err, res){
+          
+          assert.equal(res.status, 200);
+          assert.equal(res.text, 'no updated field sent');
+          done();
+          
+        });
       });
       
       test('One field to update', function(done) {
-        
+        const random = Math.random();
+        chai
+        .request(server)
+        .put('/api/issues/test')
+        .send({
+          _id: '5d0e6910cb6bac77d71d6ad7',
+          created_by: 'Test ' + random
+        })
+        .end(function(err, res){
+          
+          assert.equal(res.status, 200);
+          assert.equal(res.body.created_by, 'Test' + random);
+          done();
+          
+        });
       });
       
       test('Multiple fields to update', function(done) {
