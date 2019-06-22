@@ -48,8 +48,8 @@ app.use(function(req, res, next) {
     .send('Not Found');
 });
 
-app.use(function(err, req, res, next){
-  res.send(err.message);
+app.use(function(err, req, res){
+  res.json(err);
 });
 
 //Start our server and tests!

@@ -31,7 +31,7 @@ const schema = mongoose.Schema({
   status_text: String,
   open: {
     type: Boolean,
-    default: false
+    default: true
   },
   update_on: Date
 },{
@@ -61,9 +61,9 @@ module.exports = function (app) {
     
       issue.save(function(err, issue){
         if(err) return next(err);
-        console.log(issue);
         res.json(issue);
       });
+    
     })
     
     .put(function (req, res){
