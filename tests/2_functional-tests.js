@@ -105,25 +105,38 @@ suite('Functional Tests', function() {
       });
       
       test('One field to update', function(done) {
-        const random = Math.random();
         chai
         .request(server)
         .put('/api/issues/test')
         .send({
           _id: '5d0e6910cb6bac77d71d6ad7',
-          created_by: 'Test ' + random
+          created_by: 'Test'
         })
         .end(function(err, res){
           
           assert.equal(res.status, 200);
-          assert.equal(res.body.created_by, 'Test' + random);
+          assert.equal(res.text, 'successfully updated');
           done();
           
         });
       });
       
       test('Multiple fields to update', function(done) {
-        
+        chai
+        .request(server)
+        .put('/api/issues/test')
+        .send({
+          _id: '5d0e6910cb6bac77d71d6ad7',
+          issue_text: 'test 2',
+          created_by: 'Test'
+        })
+        .end(function(err, res){
+          
+          assert.equal(res.status, 200);
+          assert.equal(res.text, 'successfully updated');
+          done();
+          
+        });
       });
       
     });

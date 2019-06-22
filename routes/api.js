@@ -37,6 +37,7 @@ const schema = mongoose.Schema({
     type: Boolean,
     default: true
   },
+  c
   update_on: Date
 },{
   versionKey: false
@@ -98,7 +99,16 @@ module.exports = function (app) {
         if(!issue) return res.send('issue not found');
         if(!props.some((v) => req.body.hasOwnProperty(v)))
           return res.send('no updated field sent');
-        Object.assign(issue, req.body);
+        
+        const data = req.body;
+        const requiredFields = ['issue_title', 'issue_text', 'created_by'];
+        for(const field of requiredFields)
+          {
+            if(!data[field])
+              delete data[field];
+          }
+        
+        Object.assign(issue, data);
         issue.save(function(err, issue){
           if(err) return res.send('could not update ' + _id);
           res.send('successfully updated');
