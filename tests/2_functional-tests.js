@@ -28,6 +28,7 @@ suite('Functional Tests', function() {
           status_text: 'In QA'
         })
         .end(function(err, res){
+         
           assert.equal(res.status, 200);
          
           assert.deepInclude(res.body, {
@@ -43,7 +44,21 @@ suite('Functional Tests', function() {
       });
       
       test('Required fields filled in', function(done) {
-        
+        chai.request(server)
+        .post('/api/issues/test')
+        .send({
+          created_by: 'Functional Test - Every field filled in',
+          assigned_to: 'Chai and Mocha',
+          status_text: 'In QA'
+        })
+        .end(function(err, res){
+         
+          assert.equal(res.status, 200);
+         
+          assert.equal(res.text, "can't create issue");
+          
+          done();
+        });
       });
       
       test('Missing required fields', function(done) {

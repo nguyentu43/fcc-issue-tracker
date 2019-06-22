@@ -24,7 +24,7 @@ const schema = mongoose.Schema({
     required: true
   }, 
   created_by: {
-    type: Date,
+    type: String,
     required: true
   },
   project: {
