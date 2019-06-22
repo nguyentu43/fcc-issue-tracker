@@ -37,14 +37,17 @@ const schema = mongoose.Schema({
     type: Boolean,
     default: true
   },
-  c
-  update_on: Date
+  created_on: {
+    type: Date,
+    default: moment().format("YYYY-MM-DD HH:mm:ss")
+  },
+  updated_on: Date
 },{
   versionKey: false
 });
 
 schema.pre('save', function(){
-  this.update_on = moment().format("YYYY-MM-DD HH:mm:ss");
+  this.updated_on = moment().format("YYYY-MM-DD HH:mm:ss");
 });
 
 schema.methods.toJSON = function(){
@@ -73,7 +76,7 @@ module.exports = function (app) {
     
       Issue.find(query, function(err, issues){
         if(err) return res.send('mongodb error');
-        res.json(issues);
+        res.json(issues.map(i => i.toJSON()));
       });
     })
     
