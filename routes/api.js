@@ -71,8 +71,8 @@ module.exports = function (app) {
       });
     
       issue.save(function(err, issue){
-        if(err) return next(err);
-        res.json(issue.toJSON());
+        if(err) res.send("can't create issue");
+        else res.json(issue.toJSON());
       });
     
     })
@@ -81,15 +81,23 @@ module.exports = function (app) {
       var project = req.params.project;
       const _id = req.body._id;
       Issue.findOne({ _id, project }, function(err, issue){
-        if(err) return next(err);
-        if(!issue) return next(new Error('issue not found'));
-        
+        if(err) return res.send('mongoose error')
+        if(!issue) return res.send('issue not found');
+        const props = ['issue_title', 'issue_text', 'created_by', 'assigned_to', 'status_text', 'open'];
+        if(!props.some((v) => req.body.hasOwnProperty(v)))
+          return res.send('no updated field sent');
+        Object.assign(issue, req.body);
+        issue.save(function(err, issue){
+          if(err) return res.send('could not update ' + _id);
+          res.send('successfully updated');
+        });
       });
     })
     
     .delete(function (req, res){
       var project = req.params.project;
-      
+      const _id = req.body._id;
+      if(!_id) 
     });
     
 };
