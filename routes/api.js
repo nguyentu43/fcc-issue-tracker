@@ -53,6 +53,7 @@ schema.methods.toJSON = function(){
 }
 
 const Issue = mongoose.model('Issue', schema);
+const props = ['issue_title', 'issue_text', 'created_by', 'assigned_to', 'status_text', 'open'];
 
 module.exports = function (app) {
 
@@ -60,7 +61,17 @@ module.exports = function (app) {
   
     .get(function (req, res){
       var project = req.params.project;
-      
+      const query = {};
+      for(const field of props.concat(['_id']))
+        {
+          if(req.query[field] != '')
+            query[field] = req.query[field];
+        }
+      res.json(query)
+      Issue.find({...query, project}, function(err, issues){
+        if(err) return res.send('mongodb error');
+        res.json(issues);
+      })
     })
     
     .post(function (req, res, next){
@@ -81,9 +92,8 @@ module.exports = function (app) {
       var project = req.params.project;
       const _id = req.body._id;
       Issue.findOne({ _id, project }, function(err, issue){
-        if(err) return res.send('mongoose error')
+        if(err) return res.send('mongodb error')
         if(!issue) return res.send('issue not found');
-        const props = ['issue_title', 'issue_text', 'created_by', 'assigned_to', 'status_text', 'open'];
         if(!props.some((v) => req.body.hasOwnProperty(v)))
           return res.send('no updated field sent');
         Object.assign(issue, req.body);
@@ -97,7 +107,11 @@ module.exports = function (app) {
     .delete(function (req, res){
       var project = req.params.project;
       const _id = req.body._id;
-      if(!_id) 
+      if(!_id) return res.send('_id error');
+      Issue.findOneAndRemove({project, _id}, function(err, issue){
+        if(err || !issue) return res.send('could not delete ' + _id);
+        res.send('deleted ' + _id);
+      });
     });
     
 };
