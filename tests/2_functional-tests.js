@@ -29,7 +29,8 @@ suite('Functional Tests', function() {
         })
         .end(function(err, res){
           assert.equal(res.status, 200);
-          assert.deepEqual(res.body, {
+         
+          assert.deepInclude(res.body, {
             issue_title: 'Title',
             issue_text: 'text',
             created_by: 'Functional Test - Every field filled in',

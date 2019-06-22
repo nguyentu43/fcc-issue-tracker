@@ -61,17 +61,19 @@ module.exports = function (app) {
   
     .get(function (req, res){
       var project = req.params.project;
-      const query = {};
+      const query = {
+        project
+      };
       for(const field of props.concat(['_id']))
         {
-          if(req.query[field] != '')
+          if(req.query[field] && req.query[field] != '')
             query[field] = req.query[field];
         }
-      res.json(query)
-      Issue.find({...query, project}, function(err, issues){
+    
+      Issue.find(query, function(err, issues){
         if(err) return res.send('mongodb error');
         res.json(issues);
-      })
+      });
     })
     
     .post(function (req, res, next){
