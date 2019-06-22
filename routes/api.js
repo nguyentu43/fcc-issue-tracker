@@ -123,7 +123,7 @@ module.exports = function (app) {
       var project = req.params.project;
       const _id = req.body._id;
       if(!_id) return res.send('_id error');
-      Issue.findOneAndRemove({project, _id}, function(err, issue){
+      Issue.findOneAndDelete({project, _id}, function(err, issue){
         if(err || !issue) return res.send('could not delete ' + _id);
         res.send('deleted ' + _id);
       });

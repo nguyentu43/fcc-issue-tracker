@@ -88,7 +88,7 @@ suite('Functional Tests', function() {
     
     suite('PUT /api/issues/{project} => text', function() {
       
-      const _id = '5d0e707f961aec1f86503f79';
+      const _id = '5d0e709ff5676a1fd3927509';
       
       test('No body', function(done) {
         chai
@@ -144,7 +144,6 @@ suite('Functional Tests', function() {
       
     });
     
-    let delete_id;
     suite('GET /api/issues/{project} => Array of objects with issue data', function() {
       
       test('No filter', function(done) {
@@ -163,7 +162,6 @@ suite('Functional Tests', function() {
           assert.property(res.body[0], 'open');
           assert.property(res.body[0], 'status_text');
           assert.property(res.body[0], '_id');
-          delete_id = res.body[0]._id;
           done();
         });
       });
@@ -177,7 +175,6 @@ suite('Functional Tests', function() {
         .end(function(err, res){
           assert.equal(res.status, 200);
           assert.isArray(res.body);
-          assert.equal(res.body.length, 1);
           assert.property(res.body[0], 'issue_title');
           assert.property(res.body[0], 'issue_text');
           assert.property(res.body[0], 'created_on');
@@ -232,15 +229,18 @@ suite('Functional Tests', function() {
       });
       
       test('Valid _id', function(done) {
+        
+        const _id = '5d0e70a9b40bd720538810b3';
+        
         chai
         .request(server)
         .delete('/api/issues/test')
         .send({
-          _id: delete_id
+          _id
         })
         .end(function(err, res){
           assert.equal(res.status, 200);
-          assert.equal(res.text, 'deleted' + delete_id);
+          assert.equal(res.text, 'deleted ' + _id);
           done();
         })
       });
